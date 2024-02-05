@@ -124,3 +124,18 @@ query($query: String!){
   }
 }
 """
+
+executeScoreFunction = """
+query($triples: [[String!]]) { executeScoreFunction(triples: $triples
+  )
+}
+"""
+
+executeVectorFunction = """
+query($graphIds: [String!]) { executeVectorFunction(graphIds: $graphIds)  
+}
+"""
+
+getPredicates = """
+query($label: String!){getPredicates(label: $label)}
+"""

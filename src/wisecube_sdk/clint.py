@@ -1,4 +1,4 @@
-from wisecube_sdk import api_calls, create_payload, create_response, string_query
+import api_calls, create_payload, create_response, string_query
 import json
 
 
@@ -67,6 +67,34 @@ class QueryMethods:
         return create_response.search_text(response)
 
 
+    def executeVectorFunction(self, graphIds: [str]):
+        variables = {
+            "graphIds": graphIds
+        }
+        payload = create_payload.create(string_query.executeVectorFunction, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return response.json()
+
+    def executeScoreFunction(self, graphIds: [[str]]):
+        variables = {
+            "triples": graphIds
+        }
+        payload = create_payload.create(string_query.executeScoreFunction, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return response.json()
+
+    def getLabel(self, label: str):
+        variables = {
+            "label": label
+        }
+        payload = create_payload.create(string_query.getPredicates, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return response.json()
+
+
 class OpenClient:
     def __init__(self, url):
         self.url = url
@@ -107,7 +135,7 @@ class AuthClient(QueryMethods):
 
 class ApiClient(QueryMethods):
     def __init__(self, api_key):
-        super().__init__("https://api.wisecube.ai/orpheus/graphql", "1mbgahp6p36ii1jc851olqfhnm")
+        super().__init__("http://localhost:8080/graphql", "1mbgahp6p36ii1jc851olqfhnm")
         self.api_key = api_key
 
     def get_headers(self):
