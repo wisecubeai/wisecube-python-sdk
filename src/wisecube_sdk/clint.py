@@ -1,4 +1,4 @@
-from src.wisecube_sdk import api_calls, create_payload, create_response, string_query
+from wisecube_sdk import api_calls, create_payload, create_response, string_query
 import json
 
 
