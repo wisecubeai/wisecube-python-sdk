@@ -85,7 +85,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return response.json()
 
-    def getLabel(self, label: str):
+    def getPredicates(self, label: str):
         variables = {
             "label": label
         }
@@ -135,7 +135,7 @@ class AuthClient(QueryMethods):
 
 class ApiClient(QueryMethods):
     def __init__(self, api_key):
-        super().__init__("http://localhost:8080/graphql", "1mbgahp6p36ii1jc851olqfhnm")
+        super().__init__("https://api.wisecube.ai/orpheus/graphql", "1mbgahp6p36ii1jc851olqfhnm")
         self.api_key = api_key
 
     def get_headers(self):
