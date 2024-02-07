@@ -139,3 +139,13 @@ query($graphIds: [String!]) { executeVectorFunction(graphIds: $graphIds)
 getPredicates = """
 query($label: String!){getPredicates(label: $label)}
 """
+
+advancedSearchQuery = """
+query advancedSearchQuery($query: String) {
+  advancedSearchGraph(query: $query) {
+    head
+    results
+    __typename
+  }
+}
+"""

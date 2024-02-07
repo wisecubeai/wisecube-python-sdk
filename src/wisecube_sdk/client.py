@@ -93,6 +93,15 @@ class QueryMethods:
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return response.json()
+    
+    def advancedSearch(self, query: str):
+        variables = {
+            "query": query
+        }
+        payload = create_payload.create(string_query.advancedSearchQuery, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return create_response.advanced_search(response)
 
 
 class OpenClient:
