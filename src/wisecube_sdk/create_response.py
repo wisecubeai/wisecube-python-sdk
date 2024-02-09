@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 def qa(response):
     response = response.json()
     return pd.DataFrame(response["data"]["summaryInsights"][0]["data"]["answers"][0]["document"])
