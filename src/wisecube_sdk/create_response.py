@@ -12,3 +12,7 @@ def search_graph(response):
 
 def search_text(response):
     return response.json()
+
+
+def advanced_search(response):
+    return response.json()
