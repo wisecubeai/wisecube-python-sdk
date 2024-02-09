@@ -74,7 +74,8 @@ class QueryMethods:
         payload = create_payload.create(string_query.executeVectorFunction, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return response.json()
+        if response is not None:
+            return response.json()
 
     def executeScoreFunction(self, graphIds: [[str]]):
         variables = {
