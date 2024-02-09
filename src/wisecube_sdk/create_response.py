@@ -54,7 +54,7 @@ def getPredicates(response):
     response = response.json()
     if not use_pandas:
         return response
-    return pd.DataFrame(response["data"]["getPredicates"])
+    return pd.DataFrame(response["data"]["searchAsYouType"]["data"]["searchLabels"])
 
 
 def advanced_search(response):
