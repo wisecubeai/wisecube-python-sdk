@@ -28,5 +28,4 @@ def advanced_search(response):
     response = response.json()
     columns = response["data"]["advancedSearchGraph"]["head"]["vars"]
     rows = [{k: d["value"] for k, d in r.items()} for r in response["data"]["advancedSearchGraph"]["results"]["bindings"]]
-    pd.DataFrame(rows)[columns]
-    return response.json()
+    return pd.DataFrame(rows)[columns]
