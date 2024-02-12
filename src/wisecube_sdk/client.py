@@ -1,4 +1,5 @@
 from wisecube_sdk import api_calls, create_payload, create_response, string_query
+from wisecube_sdk.model_names import WisecubeModel
 import json
 
 
@@ -102,6 +103,16 @@ class QueryMethods:
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.advanced_search(response)
+
+    def getAdmetPrediction(self, smiles: [str], model: WisecubeModel):
+        variables  = {
+            "smiles": smiles,
+            "modelName": model.value
+        }
+        payload = create_payload.create(string_query.getAdmetPrediction, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return response.json()
 
 
 class OpenClient:
