@@ -38,13 +38,13 @@ auth_client.client.qa("What is the meaning of life?")
 ***Below is a table with the APIs and a short descirption. ***
 
 
-| APIs                   | Description                                                                                           |
-|------------------------|-------------------------------------------------------------------------------------------------------|
-| [QA](#qa)              | -returns the answer and documents related to the question                                             |
-| [Documents](#doc)      | -return documents for the question                                                                    |
-| [Search_Graph](#graph) | -returns results containing nodes and edges                                                           |
-| [Search_Text](#search) | -returns a list of entities related to the search term                                                |
- | [advanced_search](#ad) | -returns a dataframe with multiple rows, each representing a different entity with its URI and label  |
+| APIs                   | Description                                                                                       |
+|------------------------|---------------------------------------------------------------------------------------------------|
+| [QA](#qa)              | returns the answer and documents related to the question                                          |
+| [Documents](#doc)      | return documents for the question                                                                 |
+| [Search_Graph](#graph) | returns results containing nodes and edges                                                        |
+| [Search_Text](#search) | returns a list of entities related to the search term                                             |
+ | [advanced_search](#ad) | returns a dataframe with multiple rows, each representing a different entity with its URI and label |
 
 
 
