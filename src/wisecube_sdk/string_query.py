@@ -140,6 +140,12 @@ getPredicates = """
 query($label: String!){getPredicates(label: $label)}
 """
 
+getAdmetPrediction = """
+query ($smiles: [String!], $modelName: String){ admetPredict(smiles: $smiles, modelName: $modelName)
+}
+
+"""
+
 advancedSearchQuery = """
 query advancedSearchQuery($query: String) {
   advancedSearchGraph(query: $query) {
