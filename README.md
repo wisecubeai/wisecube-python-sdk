@@ -33,22 +33,22 @@ auth_key = WisecubeClient('api_key')
 auth_client = WisecubeClient('api_key')
 
 # Perform operations using the SDK methods
-auth_client.client.qa("What is the meaning of life?")
+auth_client.client.qa("Which proteins participate in the formation of the ryanodine receptor quaternary macromolecular complex?")
 ```
 ***Below is a table with the APIs and a short descirption. ***
 
 
-| APIs                   | Description                                                                                       |
-|------------------------|---------------------------------------------------------------------------------------------------|
-| [QA](#qa)              | returns the answer and documents related to the question                                          |
-| [Documents](#doc)      | return documents for the question                                                                 |
-| [Search_Graph](#graph) | returns results containing nodes and edges                                                        |
-| [Search_Text](#search) | returns a list of entities related to the search term                                             |
- | [advanced_search](#ad) | returns a dataframe with multiple rows, each representing a different entity with its URI and label |
-
-
-
-
+| APIs                           | Description                                                                                         |
+|--------------------------------|-----------------------------------------------------------------------------------------------------|
+| [qa](#qa)                      | returns the answer and documents related to the question                                            |
+| [documents](#doc)              | return documents for the question                                                                   |
+| [search_graph](#graph)         | returns results containing nodes and edges                                                          |
+| [search_text](#search)         | returns a list of entities related to the search term                                               |
+ | [advanced_search](#ad)         | returns a dataframe with multiple rows, each representing a different entity with its URI and label |
+| [getPredicates](#pred)         | retrieves information about predicates associated with a given label                                |
+| [executeVectorFunction](#vect) | retrieves embeddings for the given entities                                                         |
+| [executeScoreFunction](#score) | returns the score for each triple                                                                   |
+| [getAdmetPrediction](#admet)   | returns prediction using ADMET models and sagemaker                                                 |
 
 
 ### <h2 id="qa">QA</h2>
@@ -101,4 +101,54 @@ auth_client.client.advancedSearch(query)
 ```
 #### Parameters
 * _query_ (String): query for advanced search, encoded as a string
+
+
+### <h2 id="pred">Predicate Graph</h2>
+#### Description
+The API retrieves information about predicates associated with a given label.
+
+```python
+auth_api_client.getPredicates(labels)
+```
+#### Parameters
+* _labels_(String): represents the label of a predicate
+
+
+### <h2 id="vect">Execute Vector Function</h2>
+#### Description
+The API retrieves embeddings for the given entities.
+
+```python
+auth_api_client.executeVectorFunction(graphIds)
+```
+
+#### Parameters
+* _graphIds_[String]: variable used to specify a list of graph IDs
+
+
+### <h2 id="score">Execute Score Function</h2>
+#### Description
+This API retrieves the score for each triple.
+
+```python
+auth_api_client.executeScoreFunction(triples)
+```
+
+#### Parameters
+* _triples_[[String]]: variable representing a list of lists of strings, containing three elements
+
+
+### <h2 id="admet">Admet Prediction </h2>
+#### Description
+This API retrieves prediction using ADMET models and sagemaker.
+
+List of models: [BBB, logS, CYP2CI9i, LogD7, PGPi, PGPs, HIA, F20, F30, PPB, VD, CYPIA2i, CYPIA2s, CYP3A4i, CYP3A4s, CYP2C9i, CYP2C9s, CYP2C19s, CYP2D6i, CYP2D6s,  CL, Ames, DILI, SkinS ]
+
+```python
+auth_api_client.getAdmetPrediction(smiles=smiles, model=model.BBB)
+```
+
+#### Parameters
+* _smiles_[String]: specification in the form of a line notation for describing the structure of chemical species
+* _model_ (String): represents the model name
 
