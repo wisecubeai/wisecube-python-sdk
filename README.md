@@ -142,7 +142,7 @@ auth_api_client.executeScoreFunction(triples)
 #### Description
 This API retrieves prediction using ADMET models and sagemaker.
 
-List of models: [BBB, logS, CYP2CI9i, LogD7, PGPi, PGPs, HIA, F20, F30, PPB, VD, CYPIA2i, CYPIA2s, CYP3A4i, CYP3A4s, CYP2C9i, CYP2C9s, CYP2C19s, CYP2D6i, CYP2D6s,  CL, Ames, DILI, SkinS ]
+List of models: [BBB, logS, CYP2CI9i, LogD7, PGPi, PGPs, HIA, F20, F30, PPB, VD, CYPIA2i, CYPIA2s, CYP3A4i, CYP3A4s, CYP2C9i, CYP2C9s, CYP2C19s, CYP2D6i, CYP2D6s,  CL, Ames, DILI, SkinS, Caco2 ]
 
 ```python
 auth_api_client.getAdmetPrediction(smiles=smiles, model=model.BBB)
