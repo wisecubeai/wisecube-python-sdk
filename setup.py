@@ -25,4 +25,7 @@ setuptools.setup(
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.6",
+    extras_require={
+        "pandas": ["pandas==1.5.3"],
+    }
 )
