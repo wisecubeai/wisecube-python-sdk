@@ -8,10 +8,10 @@ except ImportError:
 def qa(response):
     response = response.json()
     if not use_pandas:
-        return response
-    # return pd.DataFrame(response["data"]["summaryInsights"][0]["data"]["answers"][0]["document"])
-    return response["data"]["summaryInsights"][0]["data"]
-
+        return response, None
+    documents =  pd.DataFrame(response["data"]["summaryInsights"][0]["data"]["answers"][0]["document"])
+    answer = response["data"]["summaryInsights"][0]["data"]["answers"][0]["answer"]
+    return answer, documents
 
 def documents(response):
     response = response.json()
