@@ -10,7 +10,7 @@ def qa(response):
     if not use_pandas:
         return response
     # return pd.DataFrame(response["data"]["summaryInsights"][0]["data"]["answers"][0]["document"])
-    return response["data"]["summaryInsights"][0]["data"]["answers"]
+    return response["data"]["summaryInsights"][0]["data"]
 
 
 def documents(response):
