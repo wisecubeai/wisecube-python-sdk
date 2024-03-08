@@ -9,7 +9,8 @@ def qa(response):
     response = response.json()
     if not use_pandas:
         return response
-    return pd.DataFrame(response["data"]["summaryInsights"][0]["data"]["answers"][0]["document"])
+    # return pd.DataFrame(response["data"]["summaryInsights"][0]["data"]["answers"][0]["document"])
+    return response["data"]["summaryInsights"][0]["data"]["answers"]
 
 
 def documents(response):
