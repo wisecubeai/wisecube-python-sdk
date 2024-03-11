@@ -6,6 +6,7 @@ query($query: String!) {
       ... on QAInsight {
         question
         answers {
+          answer
           document {
             id
             title
