@@ -7,6 +7,7 @@ def basic(response):
     return response
 
 def qa(response, output_format: OutputFormat):
+    response = response.json()
     if output_format == OutputFormat.JSON:
         return response, None
     documents = pd.DataFrame(response["data"]["summaryInsights"][0]["data"]["answers"][0]["document"])
