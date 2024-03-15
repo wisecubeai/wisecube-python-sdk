@@ -78,7 +78,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.search_text(response)
 
-    def executeVectorFunction(self, graphIds: [str]):
+    def execute_vector_function(self, graphIds: [str]):
         variables = {
             "graphIds": graphIds
         }
@@ -88,7 +88,7 @@ class QueryMethods:
         if response is not None:
             return create_response.executeVectorFunction(response, self.output_format)
 
-    def executeScoreFunction(self, graphIds: [[str]]):
+    def execute_score_function(self, graphIds: [[str]]):
         variables = {
             "triples": graphIds
         }
@@ -97,7 +97,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.executeScoreFunction(response, self.output_format)
 
-    def Nl2Sparql(self, question: str):
+    def nl_2_sparql(self, question: str):
         variables = {
             "question": question
         }
@@ -106,7 +106,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.basic(response)
 
-    def getPredicates(self, label: str):
+    def get_predicates(self, label: str):
         variables = {
             "label": label
         }
@@ -115,7 +115,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.getPredicates(response, self.output_format)
 
-    def advancedSearch(self, query: str):
+    def advance_search(self, query: str):
         variables = {
             "query": query
         }
@@ -124,7 +124,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.advanced_search(response)
 
-    def getAdmetPrediction(self, smiles: [str], model: WisecubeModel):
+    def get_admet_predictions(self, smiles: [str], model: WisecubeModel):
         variables = {
             "smiles": smiles,
             "modelName": model.value
