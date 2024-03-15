@@ -101,7 +101,7 @@ class QueryMethods:
         variables = {
             "question": question
         }
-        payload = create_payload.create(string_query.executeNl2Sparql, variables)
+        payload = create_payload.create(string_query.execute_nl2sparql, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.nl_2_sparql(response)
@@ -119,7 +119,7 @@ class QueryMethods:
         variables = {
             "query": query
         }
-        payload = create_payload.create(string_query.advancedSearchQuery, variables)
+        payload = create_payload.create(string_query.advanced_search_query, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.advanced_search(response, self.output_format)
@@ -129,7 +129,7 @@ class QueryMethods:
             "smiles": smiles,
             "modelName": model.value
         }
-        payload = create_payload.create(string_query.getAdmetPrediction, variables)
+        payload = create_payload.create(string_query.get_admet_prediction, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.basic(response)

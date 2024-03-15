@@ -91,6 +91,6 @@ if __name__ == "__main__":
        "C1COc(c12)cc(Br)c(c2)NC(=O)C(=O)NCc(c3)ccc(c34)N(C)CC(C4)CO",
        "c1coc(c12)cc(Br)c(c2)NC(=O)C(=O)NCc(c3)ccc(c34)N(C)CC(C4)CO"
     ]
-    predictions = client.getAdmetPrediction(smiles=smiles, model=model.CACO2)
+    predictions = client.get_admet_prediction(smiles=smiles, model=model.CACO2)
     print(predictions)
 

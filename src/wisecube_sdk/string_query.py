@@ -126,34 +126,34 @@ query($query: String!){
 }
 """
 
-executeScoreFunction = """
+execute_score_function = """
 query($triples: [[String!]]) { executeScoreFunction(triples: $triples
   )
 }
 """
 
-executeVectorFunction = """
+execute_vector_function = """
 query($graphIds: [String!]) { executeVectorFunction(graphIds: $graphIds)  
 }
 """
 
-executeNl2Sparql = """
+execute_nl2sparql = """
 query executeNl2Sparql($question: String!) {
   executeNl2Sparql(question: $question) 
 }
 """
 
-getPredicates = """
+get_predicates = """
 query($label: String!){getPredicates(label: $label)}
 """
 
-getAdmetPrediction = """
+get_admet_prediction = """
 query ($smiles: [String!], $modelName: String){ admetPredict(smiles: $smiles, modelName: $modelName)
 }
 
 """
 
-advancedSearchQuery = """
+advanced_search_query = """
 query advancedSearchQuery($query: String) {
   advancedSearchGraph(query: $query) {
     head
