@@ -24,13 +24,13 @@ class QueryMethods:
 
     @property
     def output_format(self):
-        return getattr(self, 'output_format', OutputFormat.JSON)
+        return getattr(self, '_output_format', OutputFormat.JSON)
 
     @output_format.setter
     def output_format(self, value):
         if not isinstance(value, OutputFormat):
             raise ValueError("output_format must be a OutputFormat.")
-        self.output_format = value
+        self._output_format = value
 
     def get_headers(self):
         raise NotImplementedError("Subclasses must implement get_headers")
