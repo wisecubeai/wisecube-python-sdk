@@ -136,6 +136,12 @@ query($graphIds: [String!]) { executeVectorFunction(graphIds: $graphIds)
 }
 """
 
+executeNl2Sparql = """
+query executeNl2Sparql($question: String!) {
+  executeNl2Sparql(question: $question) 
+}
+"""
+
 getPredicates = """
 query($label: String!){getPredicates(label: $label)}
 """

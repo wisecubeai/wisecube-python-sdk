@@ -29,7 +29,21 @@ class WisecubeModel(Enum):
     CACO2 = "Caco2"   
     THALF = "THALF"  
     HERG = "hERG"  
-    HHT = "HHT"  
+    HHT = "HHT"
+
+class OutputFormat(Enum):
+    def toPandas(argument):
+        print("Function 1 with argument:", argument)
+
+    def toJson(argument):
+        print("Function 2 with argument:", argument)
+    JSON = toPandas
+    PANDAS = toJson
+
+
+
+
+
 
 
 
