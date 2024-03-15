@@ -97,7 +97,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.executeScoreFunction(response, self.output_format)
 
-    def nl_2_sparql(self, question: str):
+    def nl_to_sparql(self, question: str):
         variables = {
             "question": question
         }
