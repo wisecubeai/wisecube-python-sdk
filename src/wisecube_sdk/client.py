@@ -1,5 +1,5 @@
 from wisecube_sdk import api_calls, create_payload, create_response, string_query
-from wisecube_sdk.model_names import WisecubeModel
+from wisecube_sdk.model_names import WisecubeModel, OutputFormat
 import json
 
 
@@ -16,10 +16,21 @@ class WisecubeClient:
             raise Exception("Invalid args")
 
 
+
 class QueryMethods:
     def __init__(self, url, client_id):
         self.url = url
         self.client_id = client_id
+
+    @property
+    def output_format(self):
+        return getattr(self, 'output_format', OutputFormat.JSON)
+
+    @output_format.setter
+    def output_format(self, value):
+        if not isinstance(value, OutputFormat):
+            raise ValueError("output_format must be a OutputFormat.")
+        self.output_format = value
 
     def get_headers(self):
         raise NotImplementedError("Subclasses must implement get_headers")
@@ -31,7 +42,7 @@ class QueryMethods:
         payload = create_payload.create(string_query.qa, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.qa(response)
+        return create_response.qa(response, self.output_format)
 
     def documents(self, text):
         variables = {
@@ -40,7 +51,7 @@ class QueryMethods:
         payload = create_payload.create(string_query.documents, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.documents(response)
+        return create_response.documents(response, self.output_format)
 
     def search_graph(self, text, nr=10):
         if create_payload.is_valid_url(text):
@@ -56,7 +67,7 @@ class QueryMethods:
         payload = create_payload.create(string_query.search_graph, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.search_graph(response)
+        return create_response.search_graph(response, self.output_format)
 
     def search_text(self, text):
         variables = {
@@ -67,7 +78,6 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.search_text(response)
 
-
     def executeVectorFunction(self, graphIds: [str]):
         variables = {
             "graphIds": graphIds
@@ -76,7 +86,7 @@ class QueryMethods:
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         if response is not None:
-            return create_response.executeVectorFunction(response)
+            return create_response.executeVectorFunction(response, self.output_format)
 
     def executeScoreFunction(self, graphIds: [[str]]):
         variables = {
@@ -85,7 +95,16 @@ class QueryMethods:
         payload = create_payload.create(string_query.executeScoreFunction, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.executeScoreFunction(response)
+        return create_response.executeScoreFunction(response, self.output_format)
+
+    def executeNl2SparqlFunction(self, question: str):
+        variables = {
+            "question": question
+        }
+        payload = create_payload.create(string_query.executeNl2Sparql, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return create_response.basic(response)
 
     def getPredicates(self, label: str):
         variables = {
@@ -94,8 +113,8 @@ class QueryMethods:
         payload = create_payload.create(string_query.getPredicates, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.getPredicates(response)
-    
+        return create_response.getPredicates(response, self.output_format)
+
     def advancedSearch(self, query: str):
         variables = {
             "query": query
@@ -106,14 +125,14 @@ class QueryMethods:
         return create_response.advanced_search(response)
 
     def getAdmetPrediction(self, smiles: [str], model: WisecubeModel):
-        variables  = {
+        variables = {
             "smiles": smiles,
             "modelName": model.value
         }
         payload = create_payload.create(string_query.getAdmetPrediction, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return response.json()
+        return create_response.basic(response)
 
 
 class OpenClient:
@@ -122,7 +141,7 @@ class OpenClient:
 
 
 class AuthClient(QueryMethods):
-    def __init__(self, username, password):
+    def __init__(self, username, password, ):
         super().__init__("https://api.wisecube.ai/orpheus/graphql", "1mbgahp6p36ii1jc851olqfhnm")
         self.username = username
         self.password = password
