@@ -42,7 +42,7 @@ if __name__ == "__main__":
         "Q12078"
       ]
     print("results = client.executeVectorFunction(graphIds)")
-    results = client.executeVectorFunction(graphIds)
+    results = client.execute_vector_function(graphIds)
     print(results)
 
     print("="*50, end="\n"*3)
@@ -53,14 +53,14 @@ if __name__ == "__main__":
         ['Q183134', 'P2176', 'Q1082945']
     ]
     print("results = client.executeScoreFunction(triples)")
-    results = client.executeScoreFunction(triples)
+    results = client.execute_score_function(triples)
     print(results)
 
     print("="*50)
 
     predicate = "encodes"
     print("results = client.getPredicates(predicate)")
-    results = client.getPredicates(predicate)
+    results = client.get_predicates(predicate)
     print(results)
 
     query = """

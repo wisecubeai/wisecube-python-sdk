@@ -82,20 +82,20 @@ class QueryMethods:
         variables = {
             "graphIds": graphIds
         }
-        payload = create_payload.create(string_query.executeVectorFunction, variables)
+        payload = create_payload.create(string_query.execute_vector_function, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         if response is not None:
-            return create_response.executeVectorFunction(response, self.output_format)
+            return create_response.execute_vector_function(response, self.output_format)
 
     def execute_score_function(self, graphIds: [[str]]):
         variables = {
             "triples": graphIds
         }
-        payload = create_payload.create(string_query.executeScoreFunction, variables)
+        payload = create_payload.create(string_query.execute_score_function, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.executeScoreFunction(response, self.output_format)
+        return create_response.execute_score_function(response, self.output_format)
 
     def nl_to_sparql(self, question: str):
         variables = {
@@ -104,16 +104,16 @@ class QueryMethods:
         payload = create_payload.create(string_query.executeNl2Sparql, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.basic(response)
+        return create_response.nl_2_sparql(response)
 
     def get_predicates(self, label: str):
         variables = {
             "label": label
         }
-        payload = create_payload.create(string_query.getPredicates, variables)
+        payload = create_payload.create(string_query.get_predicates, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.getPredicates(response, self.output_format)
+        return create_response.get_predicates(response, self.output_format)
 
     def advance_search(self, query: str):
         variables = {

@@ -6,6 +6,7 @@ def basic(response):
     response = response.json()
     return response
 
+
 def qa(response, output_format: OutputFormat):
     response = response.json()
     if output_format == OutputFormat.JSON:
@@ -39,25 +40,34 @@ def search_text(response, output_format: OutputFormat):
     return pd.DataFrame(response["data"]["searchAsYouType"]["data"]["searchLabels"])
 
 
-def executeVectorFunction(response, output_format: OutputFormat):
+def execute_vector_function(response, output_format: OutputFormat):
     response = response.json()
     if output_format == OutputFormat.JSON:
         return response
     return pd.DataFrame(response["data"]["executeVectorFunction"])
 
 
-def executeScoreFunction(response, output_format: OutputFormat):
+def execute_score_function(response, output_format: OutputFormat):
     response = response.json()
     if output_format == OutputFormat.JSON:
         return response
     return pd.DataFrame(response["data"]["executeScoreFunction"], columns=["subject", "predicate", "object", "score"])
 
 
-def getPredicates(response, output_format: OutputFormat):
+def get_predicates(response, output_format: OutputFormat):
     response = response.json()
     if output_format == OutputFormat.JSON:
         return response
     return pd.DataFrame(response["data"]["getPredicates"])
+
+
+def nl_2_sparql(response):
+    response = response.json()
+    try:
+        return response["data"]["executeNl2Sparql"]["SPARQL"]
+    except Exception as e:
+        print(e)
+    return response
 
 
 def advanced_search(response, output_format: OutputFormat):
@@ -65,5 +75,6 @@ def advanced_search(response, output_format: OutputFormat):
     if output_format == OutputFormat.JSON:
         return response
     columns = response["data"]["advancedSearchGraph"]["head"]["vars"]
-    rows = [{k: d["value"] for k, d in r.items()} for r in response["data"]["advancedSearchGraph"]["results"]["bindings"]]
+    rows = [{k: d["value"] for k, d in r.items()} for r in
+            response["data"]["advancedSearchGraph"]["results"]["bindings"]]
     return pd.DataFrame(rows)[columns]
