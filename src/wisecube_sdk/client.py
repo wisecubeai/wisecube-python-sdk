@@ -76,7 +76,7 @@ class QueryMethods:
         payload = create_payload.create(string_query.search_text, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.search_text(response)
+        return create_response.search_text(response,self.output_format )
 
     def execute_vector_function(self, graphIds: [str]):
         variables = {
