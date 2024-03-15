@@ -1,4 +1,4 @@
-from model_formats import OutputFormat
+from wisecube_sdk.model_formats import OutputFormat
 import pandas as pd
 
 

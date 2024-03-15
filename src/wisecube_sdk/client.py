@@ -1,5 +1,5 @@
 from wisecube_sdk import api_calls, create_payload, create_response, string_query
-from wisecube_sdk.model_names import WisecubeModel, OutputFormat
+from wisecube_sdk.model_formats import WisecubeModel, OutputFormat
 import json
 
 

@@ -1,5 +1,4 @@
 from wisecube_sdk.client import WisecubeClient
-import wisecube_sdk.model_names
 from wisecube_sdk.model_names import WisecubeModel as model
 from getpass import getpass
 import sys
