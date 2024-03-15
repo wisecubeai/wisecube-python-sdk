@@ -75,7 +75,8 @@ class QueryMethods:
         payload = create_payload.create(string_query.executeVectorFunction, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return response.json()
+        if response is not None:
+            return create_response.executeVectorFunction(response)
 
     def executeScoreFunction(self, graphIds: [[str]]):
         variables = {
@@ -84,7 +85,7 @@ class QueryMethods:
         payload = create_payload.create(string_query.executeScoreFunction, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return response.json()
+        return create_response.executeScoreFunction(response)
 
     def getPredicates(self, label: str):
         variables = {
@@ -93,7 +94,7 @@ class QueryMethods:
         payload = create_payload.create(string_query.getPredicates, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return response.json()
+        return create_response.getPredicates(response)
     
     def advancedSearch(self, query: str):
         variables = {

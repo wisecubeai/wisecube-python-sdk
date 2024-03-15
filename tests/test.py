@@ -1,61 +1,97 @@
-from src.wisecube_sdk.client import WisecubeClient
-import wisecube_sdk.model_names
 from wisecube_sdk.client import WisecubeClient
+import wisecube_sdk.model_names
 from wisecube_sdk.model_names import WisecubeModel as model
+from getpass import getpass
+import sys
 
-auth_api_client = WisecubeClient('API_KEY').client
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        API_KEY = sys.argv[1]
+    else:
+        API_KEY = getpass("Wisecube API key")
 
-graphIds = [
-    "Q84263196",
-    "Q12078"
-  ]
-vectors = auth_api_client.executeVectorFunction(graphIds)
-print(vectors)
+    client = WisecubeClient(API_KEY).client
 
+    query = "What genes are associated with diabetes?"
+    print("results = client.qa(query)")
+    results = client.qa(query)
+    print(results)
 
+    print("="*50)
 
-client = WisecubeClient("API_KEY").client
+    print("results = client.documents(query)")
+    results = client.documents(query)
+    print(results)
 
-predicates = client.getPredicates("encoded")
-print("Predicates data ....")
+    print("="*50)
 
-print(predicates)
+    entity = "diabetes"
+    print("results = client.search_text(entity)")
+    results = client.search_text(entity)
+    print(results)
 
-graphIds =  "Q84263196"
+    print("="*50)
 
+    print("results = client.search_graph(entity)")
+    results = client.search_graph(entity)
+    print(results)
 
-vectors = client.executeVectorFunction(graphIds)
+    print("="*50)
 
-print("Vector data ....")
-print(vectors)
+    graphIds = [
+        "Q84263196",
+        "Q12078"
+      ]
+    print("results = client.executeVectorFunction(graphIds)")
+    results = client.executeVectorFunction(graphIds)
+    print(results)
 
-triples= [
-    [
-      "Q14865565",
-      "P2293",
-      "Q3658562"
-    ],
-    [
-      "Q14865565",
-      "P2293",
-      "Q282142"
-    ],
-    [
-      "Q14865565",
-      "P2293",
-      "Q264118"
+    print("="*50, end="\n"*3)
+
+    triples = [
+        ['Q183134', 'P2176', 'Q1050019'],
+        ['Q183134', 'P2176', 'Q1052672'],
+        ['Q183134', 'P2176', 'Q1082945']
     ]
-  ]
-score = client.executeScoreFunction(triples)
+    print("results = client.executeScoreFunction(triples)")
+    results = client.executeScoreFunction(triples)
+    print(results)
 
-print("Score data ....")
-print(score)
+    print("="*50)
+
+    predicate = "encodes"
+    print("results = client.getPredicates(predicate)")
+    results = client.getPredicates(predicate)
+    print(results)
+
+    query = """
+    SELECT DISTINCT ?predicate ?predicateLabel ?object ?objectLabel
+    WHERE {
+      #get all edges going from sepsis to anything else
+      wd:Q183134 ?predicate ?object .
+
+      #this is how you get names of predicates
+      ?predicateEntity wikibase:directClaim ?predicate .
+      ?predicateEntity rdfs:label ?predicateLabel .
+      FILTER(LANG(?predicateLabel)="en")
+
+      #this is how you get names for entities
+      #this also has the effect limiting the objects to entities and not property values
+      ?object rdfs:label ?objectLabel .
+      FILTER(LANG(?objectLabel)="en")
+    }
+    """
+    results = client.advancedSearch(query)
+    results = client.advancedSearch(query)
+    print(results)
 
 
-smiles = [
-"O1COc(c12)ccc(c2)NC(=O)C(=O)NCCc(c3)ccc(c34)N(C)CCC4",
-"C1COc(c12)cc(Br)c(c2)NC(=O)C(=O)NCc(c3)ccc(c34)N(C)CC(C4)CO",
-"c1coc(c12)cc(Br)c(c2)NC(=O)C(=O)NCc(c3)ccc(c34)N(C)CC(C4)CO"
-]
-predictions = client.getAdmetPrediction(smiles=smiles, model=model.CACO2)
-print(predictions)
+
+    smiles = [
+       "O1COc(c12)ccc(c2)NC(=O)C(=O)NCCc(c3)ccc(c34)N(C)CCC4",
+       "C1COc(c12)cc(Br)c(c2)NC(=O)C(=O)NCc(c3)ccc(c34)N(C)CC(C4)CO",
+       "c1coc(c12)cc(Br)c(c2)NC(=O)C(=O)NCc(c3)ccc(c34)N(C)CC(C4)CO"
+    ]
+    predictions = client.getAdmetPrediction(smiles=smiles, model=model.CACO2)
+    print(predictions)
+
