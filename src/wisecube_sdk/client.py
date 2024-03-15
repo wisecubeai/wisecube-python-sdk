@@ -122,7 +122,7 @@ class QueryMethods:
         payload = create_payload.create(string_query.advancedSearchQuery, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.advanced_search(response)
+        return create_response.advanced_search(response, self.output_format)
 
     def get_admet_predictions(self, smiles: [str], model: WisecubeModel):
         variables = {
