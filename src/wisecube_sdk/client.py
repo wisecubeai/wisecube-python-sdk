@@ -134,7 +134,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.basic(response)
 
-    def ask_pythia(self, references: [str], response: str, question: str):
+    def ask_pythia(self, references: [str], response: str, question):
         variables = {
             "reference": references,
             "response": response,
