@@ -16,7 +16,6 @@ class WisecubeClient:
             raise Exception("Invalid args")
 
 
-
 class QueryMethods:
     def __init__(self, url, client_id):
         self.url = url
@@ -76,7 +75,7 @@ class QueryMethods:
         payload = create_payload.create(string_query.search_text, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
-        return create_response.search_text(response,self.output_format )
+        return create_response.search_text(response, self.output_format)
 
     def execute_vector_function(self, graphIds: [str]):
         variables = {
@@ -130,6 +129,18 @@ class QueryMethods:
             "modelName": model.value
         }
         payload = create_payload.create(string_query.get_admet_prediction, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return create_response.basic(response)
+
+    def ask_pythia(self, references: [str], response: str, question: str):
+        variables = {
+            "reference": references,
+            "response": response
+        }
+        if question is not None:
+            variables["question"] = question
+        payload = create_payload.create(string_query.ask_pythia, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.basic(response)

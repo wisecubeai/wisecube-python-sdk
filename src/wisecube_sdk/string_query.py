@@ -162,3 +162,10 @@ query advancedSearchQuery($query: String) {
   }
 }
 """
+
+
+ask_pythia = """
+query askPythia($reference: [String!], $response: String!, $question: String) {
+  askPythia(reference: $reference, response: $response, question: $question) 
+}
+"""
