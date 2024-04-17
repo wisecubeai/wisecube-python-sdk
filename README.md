@@ -5,7 +5,7 @@
 The Wisecube SDK provides a Python interface to interact with the Wisecube AI services. This SDK allows developers to seamlessly integrate with Wisecube's APIs for various functionalities.
 
 ## Getting Started
-#### 1. Install the sdk from github
+#### 1. Install the sdk 
 
 ```bash
 pip install wisecube
