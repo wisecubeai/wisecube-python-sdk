@@ -11,6 +11,8 @@ if __name__ == "__main__":
 
     client = WisecubeClient(API_KEY).client
 
+
+
     query = "What genes are associated with diabetes?"
     print("results = client.qa(query)")
     results = client.qa(query)

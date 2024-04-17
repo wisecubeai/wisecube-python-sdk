@@ -8,7 +8,7 @@ The Wisecube SDK provides a Python interface to interact with the Wisecube AI se
 #### 1. Install the sdk from github
 
 ```bash
-pip install git+https://github.com/wisecubeai/wisecube-python-sdk
+pip install wisecube
 ```
 
 

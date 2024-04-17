@@ -8,14 +8,14 @@ with open('requirements.txt') as f:
 
 
 setuptools.setup(
-    name="wisecube_sdk",
-    version="0.0.5",
-    author="Cosmin",
-    author_email="cosmin@wisecube.ai",
+    name="wisecube",
+    version="0.0.6",
+    author="Wisecube",
+    author_email="info@wisecube.ai",
     description="Wisecube SDK for graph Search",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pypa/sampleproject",
+    url="https://github.com/wisecubeai/wisecube-python-sdk",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
