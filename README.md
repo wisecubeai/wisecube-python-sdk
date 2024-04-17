@@ -8,7 +8,7 @@ The Wisecube SDK provides a Python interface to interact with the Wisecube AI se
 #### 1. Install the sdk from github
 
 ```bash
-pip install git+https://github.com/wisecubeai/wisecube-python-sdk
+pip install wisecube
 ```
 
 
@@ -50,6 +50,7 @@ client.qa("Which proteins participate in the formation of the ryanodine receptor
 | [execute_score_function](#score) | returns the score for each triple                                                                   |
 | [get_admet_prediction](#admet)   | returns prediction using ADMET models and sagemaker 
 | [nl_to_sparql](#nl)              | returns text converted to sparql                                                                    |
+| [ask_pythia](#pythia)            | return claims about the input                                                                       |
 
 
 ### <h2 id="qa">QA</h2>
@@ -166,4 +167,21 @@ client.nl_to_sparql(question)
 
 * _question_[String]: the input must be a question 
 
+
+#### Parameters
+* _graphIds_[String]: variable used to specify a list of graph IDs
+
+
+### <h2 id="pythia">Ask Pythia</h2>
+#### Description
+This API obtains related claims or information about the input reference, response and question.
+
+```python
+client.ask_pythia(reference,response,question)
+```
+
+#### Parameters
+* _question_(String): the input must be a question
+* _reference_([String]): information related to a medical report
+* _response_ (String): response related to a medical report
 
