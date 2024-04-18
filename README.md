@@ -1,4 +1,4 @@
-# Wisecube SDK - Version - 0.0.1
+# Wisecube SDK - Version - 1.0.0
 
 ## **Overview**
 
@@ -19,10 +19,18 @@ Create an instance of the WisecubeClient class with your API key. This is done i
 ```python
 from wisecube_sdk.client import WisecubeClient
 from wisecube_sdk.model_formats import OutputFormat
-  
 
 client = WisecubeClient("key").client
+```
+
+Set the output format for our methods (JSON, PANDAS). 
+##### !! Output by default is JSON 
+```python
+#DATAFRAME output
 client.output_format=OutputFormat.PANDAS
+
+#JSON output
+client.output_format=OutputFormat.JSON
 ```
 
 ## API Usage
