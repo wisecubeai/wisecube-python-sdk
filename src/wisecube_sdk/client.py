@@ -69,7 +69,8 @@ class QueryMethods:
             }
 
         if node_types is not None:
-            variables["nodeTypes"] = node_types
+            node_type_names = [node_type.name for node_type in node_types]
+            variables["nodeTypes"] = node_type_names
 
         payload = create_payload.create(string_query.search_graph, variables)
         headers = self.get_headers()
