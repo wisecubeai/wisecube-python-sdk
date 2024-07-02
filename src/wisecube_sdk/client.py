@@ -1,5 +1,9 @@
-from wisecube_sdk import api_calls, create_payload, create_response, string_query
-from wisecube_sdk.model_formats import WisecubeModel, OutputFormat
+import base64
+from typing import List
+
+from src.wisecube_sdk import api_calls, create_payload, create_response, string_query
+from src.wisecube_sdk.model_formats import WisecubeModel, OutputFormat
+from src.wisecube_sdk.node_types import NodeType
 import json
 
 
@@ -52,7 +56,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.documents(response, self.output_format)
 
-    def search_graph(self, text, nr=10):
+    def search_graph(self, text, nr=10, node_types: List[NodeType] = None):
         if create_payload.is_valid_url(text):
             variables = {
                 "maxNeighbours": nr,
@@ -63,7 +67,11 @@ class QueryMethods:
                 "maxNeighbours": nr,
                 "startNodeName": text
             }
+
+        if node_types is not None:
+            variables["nodeTypes"] = node_types
         payload = create_payload.create(string_query.search_graph, variables)
+        print(payload)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.search_graph(response, self.output_format)
@@ -134,8 +142,9 @@ class QueryMethods:
         return create_response.basic(response)
 
     def ask_pythia(self, references: [str], response: str, question: str):
+        encoded_strings = [base64.b64encode(s.encode()).decode() for s in references]
         variables = {
-            "reference": references,
+            "reference": encoded_strings,
             "response": response
         }
         if question is not None:
