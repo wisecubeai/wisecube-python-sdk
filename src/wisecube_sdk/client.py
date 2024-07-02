@@ -1,9 +1,9 @@
 import base64
 from typing import List
 
-from src.wisecube_sdk import api_calls, create_payload, create_response, string_query
-from src.wisecube_sdk.model_formats import WisecubeModel, OutputFormat
-from src.wisecube_sdk.node_types import NodeType
+from wisecube_sdk import api_calls, create_payload, create_response, string_query
+from wisecube_sdk.model_formats import WisecubeModel, OutputFormat
+from wisecube_sdk.node_types import NodeType
 import json
 
 
@@ -70,8 +70,8 @@ class QueryMethods:
 
         if node_types is not None:
             variables["nodeTypes"] = node_types
+
         payload = create_payload.create(string_query.search_graph, variables)
-        print(payload)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.search_graph(response, self.output_format)
