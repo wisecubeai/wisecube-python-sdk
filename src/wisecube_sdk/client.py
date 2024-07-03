@@ -1,5 +1,9 @@
+import base64
+from typing import List
+
 from wisecube_sdk import api_calls, create_payload, create_response, string_query
 from wisecube_sdk.model_formats import WisecubeModel, OutputFormat
+from wisecube_sdk.node_types import NodeType
 import json
 
 
@@ -52,7 +56,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.documents(response, self.output_format)
 
-    def search_graph(self, text, nr=10):
+    def search_graph(self, text, nr=10, node_types: List[NodeType] = None):
         if create_payload.is_valid_url(text):
             variables = {
                 "maxNeighbours": nr,
@@ -63,6 +67,11 @@ class QueryMethods:
                 "maxNeighbours": nr,
                 "startNodeName": text
             }
+
+        if node_types is not None:
+            node_type_names = [node_type.name for node_type in node_types]
+            variables["nodeTypes"] = node_type_names
+
         payload = create_payload.create(string_query.search_graph, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
@@ -134,6 +143,7 @@ class QueryMethods:
         return create_response.basic(response)
 
     def ask_pythia(self, references: [str], response: str, question: str):
+
         variables = {
             "reference": references,
             "response": response
