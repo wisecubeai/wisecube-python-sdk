@@ -142,15 +142,19 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.basic(response)
 
-    def ask_pythia(self, references: [str], response: str, question: str, include_default_validators: False):
+    def ask_pythia(self, references: [str], response: str, question: str, include_default_validators: None):
 
         variables = {
             "reference": references,
-            "response": response,
-            "includeDefaultValidators": include_default_validators
+            "response": response
         }
         if question is not None:
             variables["question"] = question
+        if include_default_validators is None:
+            variables["includeDefaultValidators"] = False
+        else:
+            variables["includeDefaultValidators"] = include_default_validators
+
 
         payload = create_payload.create(string_query.ask_pythia, variables)
         headers = self.get_headers()
