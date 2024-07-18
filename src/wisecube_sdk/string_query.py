@@ -165,7 +165,7 @@ query advancedSearchQuery($query: String) {
 
 
 ask_pythia = """
-query askPythia($reference: [String!], $response: String!, $question: String) {
-  askPythia(reference: $reference, response: $response, question: $question) 
+query askPythia($reference: [String!], $response: String!, $question: String, $includeDefaultValidators: Boolean) {
+  askPythia(reference: $reference, response: $response, question: $question, includeDefaultValidators: $includeDefaultValidators) 
 }
 """
