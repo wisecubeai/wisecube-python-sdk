@@ -1,4 +1,5 @@
 from langchain.agents import Tool
+from langchain_core.tools import StructuredTool, tool
 from tabulate import tabulate
 import numpy as np
 import pandas as pd
@@ -7,11 +8,14 @@ from openai import OpenAI
 from wisecube_sdk.client import WisecubeClient
 from src.wisecube_sdk.model_formats import OutputFormat
 
+gpt_client = OpenAI(api_key=api_key)
+client = WisecubeClient(API_KEY).client
+# client.output_format = OutputFormat.JSON
 
-client = WisecubeClient("").client
-client.output_format = OutputFormat.JSON
 
+@tool
 def generic_search(query):
+    """Call this tool for default search."""
     try:
         client.output_format = OutputFormat.PANDAS
         print("\n")
@@ -130,7 +134,7 @@ def generic_search(query):
 #         return None
 
 
-def get_treg_data(question):
+def get_treg_data(client):
     try:
         print("Combine data for given proteins, and collect embeddings and preferred labels from graph")
 
@@ -156,7 +160,7 @@ def get_treg_data(question):
       ?cancer rdfs:label ?cancerLabel. FILTER(LANG(?cancerLabel)="en")
     }
     """)
-
+        print(treg_data)
         treg_data["qid"] = treg_data["target"].str.split("/").str[-1]
         treg_data["emb"] = treg_data["qid"].apply(client.execute_vector_function)
         treg_data["emb"] = treg_data["emb"].apply(lambda emb: emb.values.squeeze())
@@ -172,7 +176,7 @@ def get_treg_data(question):
         return None
 
 
-def get_autoimmune_data(question):
+def get_autoimmune_data(client):
     try:
         print("Get autoimmune targets from the graph")
 
@@ -250,7 +254,10 @@ def calculate_similarity(treg_data, autoimmune_data):
         print(f"Error in calculate_similarity: {e}")
         return None
 
+
+@tool
 def biological_process_target(steps="treg,autoimmune,score"):
+    """Call this tool for biological process search, it does have a semantic relation to any of these concepts: TNFR2, autoimmune, cancer, T cell activation, target."""
     try:
         steps = [step.strip() for step in steps.split(",")]
         client.output_format = OutputFormat.JSON
@@ -283,6 +290,94 @@ def biological_process_target(steps="treg,autoimmune,score"):
     except Exception as e:
         print(f"Error in biological_process_target: {e}")
         return None
+
+@tool
+def query_retrieval_tool():
+    """
+    Tool for biological process search, it does have a semantic relation to any of these concepts: TNFR2, autoimmune, cancer, T cell activation, target.
+    :return: table with data for given proteins, collect embeddings and preferred labels from graph
+    """
+
+    def get_treg_data(question: str) -> str:
+        print("Combine data for given proteins, and collect embeddings and preferred labels from graph")
+        treg_data = client.advance_search("""
+            SELECT DISTINCT ?gene ?geneLabel ?target ?targetLabel ?process ?processLabel ?drug ?drugLabel ?cancer ?cancerLabel ?role ?roleLabel
+            WHERE {
+              ?target wdt:P682 ?process .       # target is involved in biological process
+              ?process wdt:P279+ wd:Q14865404 . # biological process is a kind of regulation of T cell activation
+              ?gene wdt:P688 ?target .          # the gene that encodes the target
+              ?drug wdt:P129 ?target .          # the drug that physically interacts with the target
+              ?drug wdt:P2175 ?cancer .         # the drug is used to treat a cancer
+              ?cancer (wdt:P279*)|(wdt:P31/wdt:P279*) wd:Q12078 .
+              OPTIONAL {
+                ?drug p:P129 ?st .
+                ?st ps:P129 ?target .
+                ?st pq:P2868 ?role .
+                ?role rdfs:label ?roleLabel . FILTER(LANG(?roleLabel)="en")
+              }
+              ?target rdfs:label ?targetLabel. FILTER(LANG(?targetLabel)="en")
+              ?process rdfs:label ?processLabel. FILTER(LANG(?processLabel)="en")
+              ?gene rdfs:label ?geneLabel. FILTER(LANG(?geneLabel)="en")
+              ?drug rdfs:label ?drugLabel. FILTER(LANG(?drugLabel)="en")
+              ?cancer rdfs:label ?cancerLabel. FILTER(LANG(?cancerLabel)="en")
+            }
+            """)
+
+        treg_data["qid"] = treg_data["target"].str.split("/").str[-1]
+        treg_data["emb"] = treg_data["qid"].apply(client.execute_vector_function)
+        treg_data["emb"] = treg_data["emb"].apply(lambda emb: emb.values.squeeze())
+
+        treg_data_display = treg_data.copy()
+        treg_data_display["emb"] = treg_data_display["emb"].apply(
+            lambda emb: str(emb)[:20] + '...' if len(str(emb)) > 20 else str(emb))
+        # print(tabulate(treg_data_display.head(10), headers='keys', tablefmt='pretty'))
+        # print(treg_data_display)
+        return treg_data_display
+
+    def get_autoimmune_data(question: str) -> str:
+        print("Get autoimmune targets from the graph")
+
+        autoimmune_data = client.advance_search("""
+        SELECT DISTINCT ?drug ?drugLabel ?disease ?diseaseLabel ?target ?targetLabel ?gene ?geneLabel ?role ?roleLabel
+        WHERE {
+          ?drug wdt:P2175 ?disease .
+          ?disease (wdt:P31/wdt:P279*)|(wdt:P279*) wd:Q8084905 .
+          ?drug wdt:P129 ?target .
+          OPTIONAL {
+            ?drug p:P129 ?st .
+            ?st ps:P129 ?target .
+            ?st pq:P2868 ?role .
+            ?role rdfs:label ?roleLabel . FILTER(LANG(?roleLabel)="en")
+          }
+          ?target wdt:P702 ?gene .
+          ?drug rdfs:label ?drugLabel . FILTER(LANG(?drugLabel)="en")
+          ?disease rdfs:label ?diseaseLabel . FILTER(LANG(?diseaseLabel)="en")
+          ?target rdfs:label ?targetLabel . FILTER(LANG(?targetLabel)="en")
+          ?gene rdfs:label ?geneLabel . FILTER(LANG(?geneLabel)="en")
+        }
+        ORDER BY (?geneLabel)
+        """)
+
+        print("Collect embeddings for the autoimmune targets")
+        autoimmune_data["qid"] = autoimmune_data["target"].str.split("/").str[-1]
+        autoimmune_data["emb"] = autoimmune_data["qid"].apply(client.execute_vector_function)
+        autoimmune_data["emb"] = autoimmune_data["emb"].apply(lambda emb: emb.values.squeeze())
+
+        autoimmune_data_display = autoimmune_data.copy()
+        autoimmune_data_display["emb"] = autoimmune_data_display["emb"].apply(
+            lambda emb: str(emb)[:20] + '...' if len(str(emb)) > 20 else str(emb))
+        # print(tabulate(autoimmune_data_display.head(10), headers='keys', tablefmt='pretty'))
+
+        return autoimmune_data_display
+
+    treg_tool = StructuredTool.from_function(func=get_treg_data,
+                                             name='treg_data',
+                                             description='This function focuses specifically on T cell regulation processes. It is ideal when you need detailed information on how targets influence T cell activation, which is crucial in contexts like cancer therapy and immune regulation.')
+    autoimmune_tool = StructuredTool.from_function(func=get_autoimmune_data,
+                                             name='autoimmune_data',
+                                             description='This function is dedicated to autoimmune diseases, providing data on how targets and drugs are involved in autoimmune conditions. It’s suitable for questions about how different treatments and targets interact with autoimmune diseases.')
+
+    return treg_tool,autoimmune_tool
 
 def chat_gpt(question):
     prompt = f"""
@@ -378,8 +473,9 @@ def search_qids(question):
 #         return "Invalid query type specified."
 
 
-
 def disease_biology_ex(question, query_type):
+    """Tool for analyzing and interpreting the biological mechanisms of diseases. It integrates genomic, proteomic, and clinical data to identify molecular and cellular factors involved in disease pathogenesis. It helps discover new therapeutic targets and understand the biological processes essential for disease development and progression.
+        Keywords: etiology, biology, models of IBD, pathology, pathways, cytokines, genetics, comorbidity, differential expression, co-expression, animal models."""
     client.output_format = OutputFormat.JSON
 
     search = search_qids(question)
@@ -439,58 +535,66 @@ def disease_biology_ex(question, query_type):
     return "\n".join(results_summary)
 
 
+@tool
 def target_differentiation(question):
-    return "target_differentiation method run"
+    """Tool for distinguishing and characterizing potential therapeutic targets. It evaluates molecular targets based on their relevance to specific diseases, mechanisms of action, and potential for selective therapeutic intervention. This agent aids in prioritizing targets for drug development and personalized medicine approaches."""
+    return question
 
+@tool
 def reverse_translational_analyses(question):
+    """Tool for conducting reverse translational analyses, which involves translating clinical observations back into basic research. It identifies clinical insights that can inform experimental studies, aiming to bridge the gap between clinical findings and laboratory research to uncover underlying mechanisms and potential new treatments."""
     return "reverse_translational_analyses method run"
 
+@tool
 def summarization(question):
+    """Tool for summarizing complex scientific and medical texts. It extracts key information and presents it in a concise, easy-to-understand format. This agent is useful for quickly understanding large volumes of research literature, reports, and data, providing clear and actionable insights."""
     return "summarization method run"
 
 
-generic_search = Tool(
-    name="generic_search",
-    func=generic_search,
-    description="Tool for default search."
-)
 
-biological_process_target = Tool(
-    name="biological_process_target",
-    func=biological_process_target,
-    description="Tool for biological process search, it does have a semantic relation to any of these concepts: TNFR2, autoimmune, cancer, T cell activation, target."
-)
+# query_predifined=Tool(
+#     name="query",
+#     func=query_retrieval_tool,
+#     description="Tool for biological process search, it does have a semantic relation to any of these concepts: TNFR2, autoimmune, cancer, T cell activation, target."
+# )
 
-biological_process_target_treg = Tool(
-    name="biological_process_target_treg",
-    func=get_treg_data,
-    description="This tool focuses specifically on T cell regulation processes. It is ideal when you need detailed information on how targets influence T cell activation, which is crucial in contexts like cancer therapy and immune regulation."
-)
-biological_process_target_autoimmune = Tool(
-    name="biological_process_target_autoimmune",
-    func=get_autoimmune_data,
-    description="This tool is dedicated to autoimmune diseases, providing data on how targets and drugs are involved in autoimmune conditions. It’s suitable for questions about how different treatments and targets interact with autoimmune diseases."
-)
 disease_biology = Tool(
     name="disease_biology",
     func=disease_biology_ex,
     description="Tool for analyzing and interpreting the biological mechanisms of diseases. It integrates genomic, proteomic, and clinical data to identify molecular and cellular factors involved in disease pathogenesis. It helps discover new therapeutic targets and understand the biological processes essential for disease development and progression."
                 "Keywords: etiology, biology, models of IBD, pathology, pathways, cytokines, genetics, comorbidity, differential expression, co-expression, animal models."
 )
+#
+# biological_process_target = Tool(
+#     name="biological_process_target",
+#     func=biological_process_target,
+#     description="Tool for biological process search, it does have a semantic relation to any of these concepts: TNFR2, autoimmune, cancer, T cell activation, target."
+# )
+#
+# biological_process_target_treg = Tool(
+#     name="biological_process_target_treg",
+#     func=get_treg_data,
+#     description="This tool focuses specifically on T cell regulation processes. It is ideal when you need detailed information on how targets influence T cell activation, which is crucial in contexts like cancer therapy and immune regulation."
+# )
+# biological_process_target_autoimmune = Tool(
+#     name="biological_process_target_autoimmune",
+#     func=get_autoimmune_data,
+#     description="This tool is dedicated to autoimmune diseases, providing data on how targets and drugs are involved in autoimmune conditions. It’s suitable for questions about how different treatments and targets interact with autoimmune diseases."
+# )
 
-target_differentiation = Tool(
-    name="target_differentiation",
-    func=target_differentiation,
-    description="Tool for distinguishing and characterizing potential therapeutic targets. It evaluates molecular targets based on their relevance to specific diseases, mechanisms of action, and potential for selective therapeutic intervention. This agent aids in prioritizing targets for drug development and personalized medicine approaches."
-)
-reverse_translational_analyses = Tool(
-    name="reverse_translational_analyses",
-    func=reverse_translational_analyses,
-    description="Tool for conducting reverse translational analyses, which involves translating clinical observations back into basic research. It identifies clinical insights that can inform experimental studies, aiming to bridge the gap between clinical findings and laboratory research to uncover underlying mechanisms and potential new treatments."
-)
-summarization = Tool(
-    name="summarization",
-    func=summarization,
-    description="Tool for summarizing complex scientific and medical texts. It extracts key information and presents it in a concise, easy-to-understand format. This agent is useful for quickly understanding large volumes of research literature, reports, and data, providing clear and actionable insights."
-)
+# target_differentiation = Tool(
+#     name="target_differentiation",
+#     func=target_differentiation,
+#     description="Tool for distinguishing and characterizing potential therapeutic targets. It evaluates molecular targets based on their relevance to specific diseases, mechanisms of action, and potential for selective therapeutic intervention. This agent aids in prioritizing targets for drug development and personalized medicine approaches."
+# )
+# reverse_translational_analyses = Tool(
+#     name="reverse_translational_analyses",
+#     func=reverse_translational_analyses,
+#     description="Tool for conducting reverse translational analyses, which involves translating clinical observations back into basic research. It identifies clinical insights that can inform experimental studies, aiming to bridge the gap between clinical findings and laboratory research to uncover underlying mechanisms and potential new treatments."
+# )
+# summarization = Tool(
+#     name="summarization",
+#     func=summarization,
+#     description="Tool for summarizing complex scientific and medical texts. It extracts key information and presents it in a concise, easy-to-understand format. This agent is useful for quickly understanding large volumes of research literature, reports, and data, providing clear and actionable insights."
+# )
 
