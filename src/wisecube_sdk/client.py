@@ -7,6 +7,7 @@ from wisecube_sdk.node_types import NodeType
 import json
 
 
+
 class WisecubeClient:
     def __init__(self, *args):
         if len(args) == 0:
@@ -19,11 +20,11 @@ class WisecubeClient:
         else:
             raise Exception("Invalid args")
 
-
 class QueryMethods:
     def __init__(self, url, client_id):
         self.url = url
         self.client_id = client_id
+
 
     @property
     def output_format(self):
@@ -37,6 +38,15 @@ class QueryMethods:
 
     def get_headers(self):
         raise NotImplementedError("Subclasses must implement get_headers")
+
+    def search_qid(self, text):
+        variables = {
+            "question": text
+        }
+        payload = create_payload.create(string_query.search_qids, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return create_response.search_qids(response)
 
     def qa(self, text):
         variables = {
@@ -200,6 +210,7 @@ class AuthClient(QueryMethods):
         }
 
 
+
 class ApiClient(QueryMethods):
     def __init__(self, api_key):
         super().__init__("https://api.wisecube.ai/orpheus/graphql", "1mbgahp6p36ii1jc851olqfhnm")
@@ -210,3 +221,4 @@ class ApiClient(QueryMethods):
             'Content-Type': 'application/json',
             'x-api-key': self.api_key
         }
+

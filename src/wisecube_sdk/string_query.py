@@ -169,3 +169,8 @@ query askPythia($reference: [String!], $response: String!, $question: String, $i
   askPythia(reference: $reference, response: $response, question: $question, includeDefaultValidators: $includeDefaultValidators) 
 }
 """
+
+
+search_qids = """
+query getQids($question: String!) { getQids(question: $question) }
+"""

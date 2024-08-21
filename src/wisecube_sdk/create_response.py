@@ -1,3 +1,5 @@
+import json
+
 from wisecube_sdk.model_formats import OutputFormat
 import pandas as pd
 
@@ -5,6 +7,17 @@ import pandas as pd
 def basic(response):
     response = response.json()
     return response
+
+
+def search_qids(response):
+    response = response.json()
+    qids_string = response.get("data", {}).get("getQids", "")
+    qid_cleaned = qids_string.strip()
+    qids_list = json.loads(qid_cleaned)
+    if qids_list:
+        return qids_list[0].split("/")[-1]
+    else:
+        return None
 
 
 def qa(response, output_format: OutputFormat):
@@ -78,3 +91,4 @@ def advanced_search(response, output_format: OutputFormat):
     rows = [{k: d["value"] for k, d in r.items()} for r in
             response["data"]["advancedSearchGraph"]["results"]["bindings"]]
     return pd.DataFrame(rows)[columns]
+
