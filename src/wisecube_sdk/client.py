@@ -5,26 +5,25 @@ from wisecube_sdk import api_calls, create_payload, create_response, string_quer
 from wisecube_sdk.model_formats import WisecubeModel, OutputFormat
 from wisecube_sdk.node_types import NodeType
 import json
-from openai import OpenAI
+
 
 
 class WisecubeClient:
-    def __init__(self, *args, openai_api_key=None):
+    def __init__(self, *args):
         if len(args) == 0:
             open_url = "http://127.0.0.1:5000/api/endpoint"
             self.client = OpenClient(open_url)
         elif len(args) == 1:
-            self.client = ApiClient(*args, openai_api_key)
+            self.client = ApiClient(*args)
         elif len(args) == 3:
             self.client = AuthClient(*args)
         else:
             raise Exception("Invalid args")
 
 class QueryMethods:
-    def __init__(self, url, client_id, openai_api_key):
+    def __init__(self, url, client_id):
         self.url = url
         self.client_id = client_id
-        self.gpt_client = OpenAI(api_key=openai_api_key) if openai_api_key else None
 
 
     @property
@@ -40,36 +39,14 @@ class QueryMethods:
     def get_headers(self):
         raise NotImplementedError("Subclasses must implement get_headers")
 
-
-    def chat_gpt(self, question):
-        prompt = f"""
-        Given the following scientific question, extract only the biological process or disease terms depending on question!
-
-        Question:
-        "{question}"
-        The response will be returned as text separated by |:
-        """
-        response = self.gpt_client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response.choices[0].message.content.strip()
-
-    def search_qids(self, question):
-        # self.output_format = OutputFormat.JSON
-        list_of_words = self.chat_gpt(question).split("|")
-        # print(list_of_words)
-        qids = []
-        for word in list_of_words:
-            search_text = self.search_text(word)
-            try:
-                qid = search_text["data"]["searchAsYouType"]["data"]["searchLabels"][0]["qid"]
-                qids.append(qid)
-            except (KeyError, IndexError) as e:
-                print(f"Error retrieving QID for word '{word}': {e}")
-
-        return qids
-
+    def search_qid(self, text):
+        variables = {
+            "question": text
+        }
+        payload = create_payload.create(string_query.search_qids, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return create_response.search_qids(response)
 
     def qa(self, text):
         variables = {
@@ -235,8 +212,8 @@ class AuthClient(QueryMethods):
 
 
 class ApiClient(QueryMethods):
-    def __init__(self, api_key,openai_api_key):
-        super().__init__("https://api.wisecube.ai/orpheus/graphql", "1mbgahp6p36ii1jc851olqfhnm",openai_api_key=openai_api_key)
+    def __init__(self, api_key):
+        super().__init__("https://api.wisecube.ai/orpheus/graphql", "1mbgahp6p36ii1jc851olqfhnm")
         self.api_key = api_key
 
     def get_headers(self):
