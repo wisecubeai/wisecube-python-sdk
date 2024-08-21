@@ -46,20 +46,20 @@ client.qa("Which proteins participate in the formation of the ryanodine receptor
 ***Below is a table with the APIs and a short descirption. ***
 
 
-| APIs                           | Description                                                                                         |
-|--------------------------------|-----------------------------------------------------------------------------------------------------|
-| [qa](#qa)                      | returns the answer and documents related to the question                                            |
-| [documents](#doc)              | return documents for the question                                                                   |
-| [search_graph](#graph)         | returns results containing nodes and edges                                                          |
-| [search_text](#search)         | returns a list of entities related to the search term                                               |
- | [advance_search](#ad)         | returns a dataframe with multiple rows, each representing a different entity with its URI and label |
-| [get_predicates](#pred)         | retrieves information about predicates associated with a given label                                |
+| APIs                             | Description                                                                                         |
+|----------------------------------|-----------------------------------------------------------------------------------------------------|
+| [qa](#qa)                        | returns the answer and documents related to the question                                            |
+| [documents](#doc)                | return documents for the question                                                                   |
+| [search_graph](#graph)           | returns results containing nodes and edges                                                          |
+| [search_text](#search)           | returns a list of entities related to the search term                                               |
+ | [advance_search](#ad)            | returns a dataframe with multiple rows, each representing a different entity with its URI and label |
+| [get_predicates](#pred)          | retrieves information about predicates associated with a given label                                |
 | [execute_vector_function](#vect) | retrieves embeddings for the given entities                                                         |
 | [execute_score_function](#score) | returns the score for each triple                                                                   |
-| [get_admet_prediction](#admet)   | returns prediction using ADMET models and sagemaker 
+| [get_admet_prediction](#admet)   | returns prediction using ADMET models and sagemaker                                                 
 | [nl_to_sparql](#nl)              | returns text converted to sparql                                                                    |
 | [ask_pythia](#pythia)            | return claims about the input                                                                       |
-
+| [search_qid](#qids)              | based on disease and biological terms from question,it returns a qid for each term                  | 
 
 ### <h2 id="qa">QA</h2>
 #### Description
@@ -193,3 +193,14 @@ client.ask_pythia(reference,response,question)
 * _reference_([String]): information related to a medical report
 * _response_ (String): response related to a medical report
 
+
+
+### <h2 id="qids">Search qids</h2>
+#### Description
+This API takes a question, extract the disease and biological terms from question and returns a qid for each term. 
+
+```python
+client.search_qid(question)
+```
+#### Parameters
+* _question_(String): the input must be a question
