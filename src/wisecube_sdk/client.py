@@ -48,6 +48,35 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.search_qids(response)
 
+    def search_by_type(self, text):
+        variables = {
+            "qid": text
+        }
+        payload = create_payload.create(string_query.search_by_type, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return create_response.search_by_type(response,self.output_format)
+
+    def search_by_relationship(self, predicate, qids):
+        variables = {
+            "predicate": predicate,
+            "qids": qids
+        }
+        payload = create_payload.create(string_query.search_by_relationship, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return create_response.search_by_relationship(response,self.output_format)
+
+    def search_by_qualifier(self, triples, predicate):
+        variables = {
+            "triples": triples,
+            "predicate": predicate
+        }
+        payload = create_payload.create(string_query.search_by_qualifier, variables)
+        headers = self.get_headers()
+        response = api_calls.create_api_call(payload, headers, self.url, "json")
+        return create_response.search_by_qualifier(response,self.output_format)
+
     def qa(self, text):
         variables = {
             "query": text

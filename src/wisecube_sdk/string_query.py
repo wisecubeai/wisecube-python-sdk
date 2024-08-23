@@ -174,3 +174,15 @@ query askPythia($reference: [String!], $response: String!, $question: String, $i
 search_qids = """
 query getQids($question: String!) { getQids(question: $question) }
 """
+
+search_by_type = """
+query searchByType($qid: String) { searchByType(qid: $qid) }
+"""
+
+search_by_relationship="""
+query searchByRelationship($predicate: String, $qids: [String]) { searchByRelationship(predicate: $predicate, qids: $qids) }
+"""
+
+search_by_qualifier = """
+query searchByQualifier($triples: [[String]], $predicate: String) { searchByQualifier(triples:$triples, predicate: $predicate) }
+"""
