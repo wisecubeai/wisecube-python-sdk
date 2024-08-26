@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import base64
-from typing import List
+from typing import List, Tuple
 
 from wisecube_sdk import api_calls, create_payload, create_response, string_query
 from wisecube_sdk.model_formats import WisecubeModel, OutputFormat
@@ -48,30 +50,72 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.search_qids(response)
 
-    def search_by_type(self, text):
+    def search_by_type(self, qid, name: str | None = None, include_instances: bool | None = None, include_subclasses: bool | None = None):
         variables = {
-            "qid": text
+            "qid": qid
         }
+        if name is not None:
+            variables["name"] = name
+        if include_instances is None:
+            variables["include_instances"] = True  # default value
+        else:
+            variables["include_instances"] = include_instances
+        if include_subclasses is None:
+            variables["include_subclasses"] = False  # default value
+        else:
+            variables["include_subclasses"] = include_subclasses
         payload = create_payload.create(string_query.search_by_type, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.search_by_type(response,self.output_format)
 
-    def search_by_relationship(self, predicate, qids):
+    def search_by_relationship(self, predicate, qid, incoming: bool | None = None, qid_name: str | None = None, neighbor_name: str | None = None, batch_size: int | None = None):
         variables = {
             "predicate": predicate,
-            "qids": qids
+            "qid": qid
         }
+
+        if incoming is None:
+            variables["incoming"] = False
+        else:
+            variables["incoming"] = incoming
+        if qid_name is not None:
+            variables["qid_name"] = qid_name
+        if neighbor_name is not None:
+            variables["neighbor_name"] = neighbor_name
+        if batch_size is None:
+            variables["batch_size"] = 100
+        else:
+            variables["batch_size"] = batch_size
+
         payload = create_payload.create(string_query.search_by_relationship, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.search_by_relationship(response,self.output_format)
 
-    def search_by_qualifier(self, triples, predicate):
+    def search_by_qualifier(self, triples: Tuple[str, str, str] | List[Tuple[str, str, str]],
+        qual_pred: str,
+        qual_name: str | None = None,
+        sub_name: str | None = None,
+        pred_name: str | None = None,
+        obj_name: str | None = None,
+        batch_size: int | None = None):
         variables = {
-            "triples": triples,
-            "predicate": predicate
+            "triple": triples,
+            "qual_pred": qual_pred
         }
+        if qual_name is not None:
+            variables["qual_name"] = qual_name
+        if sub_name is not None:
+            variables["sub_name"] = sub_name
+        if pred_name is not None:
+            variables["pred_name"] = pred_name
+        if obj_name is not None:
+            variables["obj_name"] = obj_name
+        if batch_size is None:
+            variables["batch_size"] = 100
+        else:
+            variables["batch_size"] = batch_size
         payload = create_payload.create(string_query.search_by_qualifier, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
