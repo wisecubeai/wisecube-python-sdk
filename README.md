@@ -1,4 +1,4 @@
-# Wisecube SDK - Version - 1.0.4
+# Wisecube SDK - Version - 1.0.5
 
 ## **Overview**
 
