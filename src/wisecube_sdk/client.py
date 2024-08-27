@@ -386,6 +386,32 @@ class QueryMethods:
         return create_response.basic(response)
 
 
+    def get_pathing(self, scoring):
+        pathing = {}
+        for _, (index, idxmax) in scoring[["index", "idxmax"]].iterrows():
+            pathing[(index, idxmax)] = []
+            if index == idxmax:
+                pathing[(index, idxmax)] = None
+                continue
+            for len1_query in string_query.length_1_queries:
+                try:
+                    len1_query = len1_query.replace("INDEX", index).replace("IDXMAX", idxmax)
+                    len1_results = self.advance_search(len1_query)
+                    pathing[(index, idxmax)] += len1_results[["dir", "predLabel", "dir"]].apply(" ".join,
+                                                                                                axis=1).to_list()
+                except KeyError:
+                    pass
+            for len2_query in string_query.length_2_queries:
+                try:
+                    len2_query = len2_query.replace("INDEX", index).replace("IDXMAX", idxmax)
+                    len2_results = self.advance_search(len2_query)
+                    pathing[(index, idxmax)] += len2_results[
+                        ["dir1", "pred1Label", "dir1", "nLabel", "dir2", "pred2Label", "dir2"]].apply(" ".join,
+                                                                                                      axis=1).to_list()
+                except KeyError:
+                    pass
+        return pathing
+
 class OpenClient:
     def __init__(self, url):
         self.url = url
