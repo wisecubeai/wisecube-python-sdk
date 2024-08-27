@@ -20,6 +20,20 @@ def search_qids(response):
         return None
 
 
+def search_entities(response,output_format: OutputFormat):
+    response = response.json()
+    if output_format == OutputFormat.JSON:
+        return response, None
+    df = pd.json_normalize(response["data"]["searchEntities"])
+    return df
+
+def search_predicate(response,output_format: OutputFormat):
+    response = response.json()
+    if output_format == OutputFormat.JSON:
+        return response, None
+    df = pd.json_normalize(response["data"]["searchPredicates"])
+    return df
+
 def qa(response, output_format: OutputFormat):
     response = response.json()
     if output_format == OutputFormat.JSON:
