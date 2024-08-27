@@ -25,7 +25,7 @@ from tools import (
     summarization, disease_biology_ex
 
 )
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 def find_tool_in_text(tools, text):

@@ -4,12 +4,16 @@ from tabulate import tabulate
 import numpy as np
 import pandas as pd
 from openai import OpenAI
-
+import os
 from wisecube_sdk.client import WisecubeClient
-from src.wisecube_sdk.model_formats import OutputFormat
+from wisecube_sdk.model_formats import OutputFormat
 
-gpt_client = OpenAI(api_key=api_key)
-client = WisecubeClient(API_KEY).client
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+wisecube_api_key = os.getenv("API_KEY")
+
+gpt_client = OpenAI(api_key=OPENAI_API_KEY)
+client = WisecubeClient(wisecube_api_key).client
 # client.output_format = OutputFormat.JSON
 
 
