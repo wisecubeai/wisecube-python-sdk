@@ -182,7 +182,7 @@ class QueryMethods:
         :param batch_size: the maximum number of QIDs to search for at once (default: 100)
         :returns: a `pandas.DataFrame` of the entity URLs and labels from the provided QID(s) and URLs and labels for the neighbors found
         """
-        global client
+
         if isinstance(triples, tuple):
             triples = [triples]
         subjects, predicates, objects = zip(*triples)
@@ -260,24 +260,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.search_predicate(response,self.output_format)
 
-    # def fix_qid(self, qid):
-    #     variables = {
-    #         "qid": qid
-    #     }
-    #     payload = create_payload.create(string_query.fix_qid, variables)
-    #     headers = self.get_headers()
-    #     response = api_calls.create_api_call(payload, headers, self.url, "json")
-    #     return create_response.fix_qid(response)
-    #
-    # def fix_pred(self, pred):
-    #     variables = {
-    #         "pred": pred
-    #     }
-    #     payload = create_payload.create(string_query.fix_pred, variables)
-    #     headers = self.get_headers()
-    #     response = api_calls.create_api_call(payload, headers, self.url, "json")
-    #     return create_response.fix_pred(response)
-    #
+
 
     def qa(self, text):
         variables = {
