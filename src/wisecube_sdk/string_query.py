@@ -175,30 +175,13 @@ search_qids = """
 query getQids($question: String!) { getQids(question: $question) }
 """
 
-search_by_type = """
-query searchByType($qid: String!, $name: String, $includeInstances: Boolean, $includeSubclasses: Boolean) { searchByType(qid: $qid, name: $name, includeInstances: $includeInstances, includeSubclasses: $includeSubclasses) }
+search_entities ="""
+query searchEntities($name: String!, $ignoreCase: Boolean, $matchingStrategy: String) {
+  searchEntities(name: $name, ignoreCase: $ignoreCase, matchingStrategy: $matchingStrategy)}
 """
 
-search_by_relationship="""
-query searchByRelationship($predicate: String!, $qid: [String!]!, $incoming: Boolean, $qidName: String, $neighborName: String, $batchSize: Int) {searchByRelationship(predicate: $predicate,qid: $qid,incoming: $incoming,qidName: $qidName,neighborName: $neighborName,batchSize: $batchSize)}
+search_predicate="""
+query searchPredicates($name: String!, $ignoreCase: Boolean, $matchingStrategy: String) {
+  searchPredicates(name: $name, ignoreCase: $ignoreCase, matchingStrategy: $matchingStrategy)}
 """
 
-search_by_qualifier = """
-query searchByQualifier(
-      $triples: [[String]]!,
-      $qualPred: String!,
-      $qualName: String,
-      $subName: String,
-      $predName: String,
-      $objName: String,
-      $batchSize: Int
-    ) {
-      searchByQualifier(
-        triples: $triples,
-        qualPred: $qualPred,
-        qualName: $qualName,
-        subName: $subName,
-        predName: $predName,
-        objName: $objName,
-        batchSize: $batchSize
-      ) }"""

@@ -19,25 +19,19 @@ def search_qids(response):
     else:
         return None
 
-def  search_by_type(response,output_format: OutputFormat):
+
+def search_entities(response,output_format: OutputFormat):
     response = response.json()
     if output_format == OutputFormat.JSON:
         return response, None
-    df = pd.json_normalize(response["data"]["searchByType"])
+    df = pd.json_normalize(response["data"]["searchEntities"])
     return df
 
-def search_by_relationship(response,output_format: OutputFormat):
+def search_predicate(response,output_format: OutputFormat):
     response = response.json()
     if output_format == OutputFormat.JSON:
         return response, None
-    df = pd.json_normalize(response["data"]["searchByRelationship"])
-    return df
-
-def search_by_qualifier(response,output_format: OutputFormat):
-    response = response.json()
-    if output_format == OutputFormat.JSON:
-        return response, None
-    df = pd.json_normalize(response["data"]["searchByQualifier"])
+    df = pd.json_normalize(response["data"]["searchPredicates"])
     return df
 
 def qa(response, output_format: OutputFormat):
