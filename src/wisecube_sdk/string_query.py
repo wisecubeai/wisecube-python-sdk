@@ -174,3 +174,98 @@ query askPythia($reference: [String!], $response: String!, $question: String, $i
 search_qids = """
 query getQids($question: String!) { getQids(question: $question) }
 """
+
+
+length_1_queries = ["""
+SELECT DISTINCT
+  ?target ("->" AS ?dir)?pred ?predLabel ?idxmax
+WHERE {
+  BIND(wd:INDEX AS ?target)
+  BIND(wd:IDXMAX AS ?idxmax)
+  ?target ?pred ?idxmax .
+  ?predEntity wikibase:directClaim ?pred .
+  ?predEntity rdfs:label ?predLabel .
+  FILTER(LANG(?predLabel)="en")
+}
+""", """
+SELECT DISTINCT
+  ?target ("<-" AS ?dir) ?pred ?predLabel ?idxmax
+WHERE {
+  BIND(wd:INDEX AS ?target)
+  BIND(wd:IDXMAX AS ?idxmax)
+  ?idxmax ?pred ?target.
+  ?predEntity wikibase:directClaim ?pred .
+  ?predEntity rdfs:label ?predLabel .
+  FILTER(LANG(?predLabel)="en")
+}
+"""]
+
+length_2_queries = ["""
+SELECT DISTINCT
+  ?target ("->" AS ?dir1) ?pred1 ?pred1Label ?n ?nLabel ("->" AS ?dir2) ?pred2 ?pred2Label ?idxmax
+WHERE {
+  BIND(wd:INDEX AS ?target)
+  BIND(wd:IDXMAX AS ?idxmax)
+  ?target ?pred1 ?n .
+  ?n ?pred2 ?idxmax .
+  ?pred1Entity wikibase:directClaim ?pred1 .
+  ?pred1Entity rdfs:label ?pred1Label .
+  FILTER(LANG(?pred1Label)="en")
+  ?pred2Entity wikibase:directClaim ?pred2 .
+  ?pred2Entity rdfs:label ?pred2Label .
+  FILTER(LANG(?pred2Label)="en")
+  ?n rdfs:label ?nLabel .
+  FILTER(LANG(?nLabel)="en")
+}
+""", """
+SELECT DISTINCT
+  ?target ("->" AS ?dir1) ?pred1 ?pred1Label ?n ?nLabel ("<-" AS ?dir2) ?pred2 ?pred2Label ?idxmax
+WHERE {
+  BIND(wd:INDEX AS ?target)
+  BIND(wd:IDXMAX AS ?idxmax)
+  ?target ?pred1 ?n .
+  ?idxmax ?pred2 ?n .
+  ?pred1Entity wikibase:directClaim ?pred1 .
+  ?pred1Entity rdfs:label ?pred1Label .
+  FILTER(LANG(?pred1Label)="en")
+  ?pred2Entity wikibase:directClaim ?pred2 .
+  ?pred2Entity rdfs:label ?pred2Label .
+  FILTER(LANG(?pred2Label)="en")
+  ?n rdfs:label ?nLabel .
+  FILTER(LANG(?nLabel)="en")
+}
+""", """
+SELECT DISTINCT
+  ?target ("<-" AS ?dir1) ?pred1 ?pred1Label ?n ?nLabel ("->" AS ?dir2) ?pred2 ?pred2Label ?idxmax
+WHERE {
+  BIND(wd:INDEX AS ?target)
+  BIND(wd:IDXMAX AS ?idxmax)
+  ?n ?pred1 ?target .
+  ?n ?pred2 ?idxmax .
+  ?pred1Entity wikibase:directClaim ?pred1 .
+  ?pred1Entity rdfs:label ?pred1Label .
+  FILTER(LANG(?pred1Label)="en")
+  ?pred2Entity wikibase:directClaim ?pred2 .
+  ?pred2Entity rdfs:label ?pred2Label .
+  FILTER(LANG(?pred2Label)="en")
+  ?n rdfs:label ?nLabel .
+  FILTER(LANG(?nLabel)="en")
+}
+""", """
+SELECT DISTINCT
+  ?target ("<-" AS ?dir1) ?pred1 ?pred1Label ?n ?nLabel ("<-" AS ?dir2) ?pred2 ?pred2Label ?idxmax
+WHERE {
+  BIND(wd:INDEX AS ?target)
+  BIND(wd:IDXMAX AS ?idxmax)
+  ?n ?pred1 ?target .
+  ?idxmax ?pred2 ?n .
+  ?pred1Entity wikibase:directClaim ?pred1 .
+  ?pred1Entity rdfs:label ?pred1Label .
+  FILTER(LANG(?pred1Label)="en")
+  ?pred2Entity wikibase:directClaim ?pred2 .
+  ?pred2Entity rdfs:label ?pred2Label .
+  FILTER(LANG(?pred2Label)="en")
+  ?n rdfs:label ?nLabel .
+  FILTER(LANG(?nLabel)="en")
+}
+"""]
