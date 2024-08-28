@@ -9,7 +9,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="wisecube",
-    version="1.0.7",
+    version="1.0.8",
     author="Wisecube",
     author_email="info@wisecube.ai",
     description="Wisecube SDK for graph Search",
