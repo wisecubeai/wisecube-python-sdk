@@ -27,6 +27,7 @@ def search_entities(response,output_format: OutputFormat):
     df = pd.json_normalize(response["data"]["searchEntities"])
     return df
 
+
 def search_predicate(response,output_format: OutputFormat):
     response = response.json()
     if output_format == OutputFormat.JSON:
@@ -69,9 +70,12 @@ def search_text(response, output_format: OutputFormat):
 
 def execute_vector_function(response, output_format: OutputFormat):
     response = response.json()
-    if output_format == OutputFormat.JSON:
-        return response
-    return pd.DataFrame(response["data"]["executeVectorFunction"])
+    try:
+        if output_format == OutputFormat.JSON:
+            return response
+        return pd.DataFrame(response["data"]["executeVectorFunction"])
+    except Exception:
+        return []
 
 
 def execute_score_function(response, output_format: OutputFormat):
