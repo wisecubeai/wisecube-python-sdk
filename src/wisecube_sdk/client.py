@@ -325,6 +325,7 @@ class QueryMethods:
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         if response is not None:
             return create_response.execute_vector_function(response, self.output_format)
+        return []
 
     def execute_score_function(self, graphIds: [[str]]):
         variables = {
