@@ -229,7 +229,7 @@ class QueryMethods:
         return result
 
 
-    def search_entities(self, name,ignore_case=False, matching_strategy=None):
+    def search_entities(self, name,ignore_case=False, matching_strategy=None,limit=None):
         variables = {
             "name": name
         }
@@ -238,20 +238,26 @@ class QueryMethods:
         else:
             variables["ignoreCase"] = ignore_case
         if matching_strategy is None:
-            variables["matchingStrategy"] = "EXACT"
+            variables["matchingStrategy"] = "FUZZY"
         else:
             variables["matchingStrategy"] = matching_strategy
+
+        if limit is None:
+            variables["limit"] = 10
+        else:
+            variables["limit"]=limit
 
         payload = create_payload.create(string_query.search_entities, variables)
         headers = self.get_headers()
         response = api_calls.create_api_call(payload, headers, self.url, "json")
         return create_response.search_entities(response,self.output_format)
 
-    def search_predicate(self, name,ignore_case=True, matching_strategy=None):
+    def search_predicate(self, name,ignore_case=True, matching_strategy=None,limit=None):
         variables = {
             "name": name,
             "ignoreCase": ignore_case if ignore_case is not None else True,
-            "matchingStrategy": matching_strategy if matching_strategy is not None else "CONTAINS"
+            "matchingStrategy": matching_strategy if matching_strategy is not None else "CONTAINS",
+            "limit": limit if limit is not None else 10
 
         }
 
