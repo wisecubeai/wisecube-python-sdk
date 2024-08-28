@@ -176,13 +176,13 @@ query getQids($question: String!) { getQids(question: $question) }
 """
 
 search_entities ="""
-query searchEntities($name: String!, $ignoreCase: Boolean, $matchingStrategy: String) {
-  searchEntities(name: $name, ignoreCase: $ignoreCase, matchingStrategy: $matchingStrategy)}
+query searchEntities($name: String!, $ignoreCase: Boolean, $matchingStrategy: String,$limit:Int) {
+  searchEntities(name: $name, ignoreCase: $ignoreCase, matchingStrategy: $matchingStrategy, limit: $limit)}
 """
 
 search_predicate="""
-query searchPredicates($name: String!, $ignoreCase: Boolean, $matchingStrategy: String) {
-  searchPredicates(name: $name, ignoreCase: $ignoreCase, matchingStrategy: $matchingStrategy)}
+query searchPredicates($name: String!, $ignoreCase: Boolean, $matchingStrategy: String,$limit:Int) {
+  searchPredicates(name: $name, ignoreCase: $ignoreCase, matchingStrategy: $matchingStrategy,limit: $limit)}
 """
 
 
